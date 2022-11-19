@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import format from 'date-fns/format';
 import Swal from 'sweetalert2';
 import { RequestBackendService } from '../request-backend.service';
 // import { NzMessageService } from 'ng-zorro-antd/message';
@@ -22,9 +23,12 @@ export class CrudUsuariosComponent implements OnInit {
     telefono: 0,
     fechaNacimiento: '',
   };
-
+  modeForm = 'adicion';
+  showForm = false;
   campoBuscar = '';
   listOfData: Person[] = [];
+  listOfDataAll: Person[] = [];
+
   sedes: any = [];
   sedeCurrent = '';
   formUser: FormGroup = new FormGroup({});
@@ -138,14 +142,20 @@ export class CrudUsuariosComponent implements OnInit {
     const datosUser = this.formUser.getRawValue();
     datosUser['fechaNacimiento'] = new Date(datosUser['fechaNacimiento']);
     datosUser['sedeId'] = this.sedeCurrent;
-
+    delete datosUser['idUsuario'];
     this.requestBack.addData('usuarios', JSON.stringify(datosUser)).subscribe({
       next: (data) => {
         console.log(data);
+        this.showForm = false;
         // this.getUsuarios();
         const cloneList = JSON.parse(JSON.stringify(this.listOfData));
         cloneList.unshift(data);
         this.listOfData = cloneList;
+        Swal.fire(
+          'Muy bien',
+          'Se ha agregado el usuario con exito.',
+          'success'
+        );
       },
       error: (error) => {
         console.log('error: ', error);
@@ -156,8 +166,40 @@ export class CrudUsuariosComponent implements OnInit {
       },
     });
   }
+  selectUserEdit(user: any): void {
+    this.showForm = true;
+    this.modeForm = 'edicion';
+    const userEdit = JSON.parse(JSON.stringify(user));
+    const fecha = user.fechaNacimiento.split('T')[0];
+    // userEdit["fechaNacimiento"] = new Date(userEdit["fechaNacimiento"]);
+    userEdit['fechaNacimiento'] = fecha;
+    this.formUser.patchValue(userEdit);
+  }
+  editUser(): void {
+    const newUser = this.formUser.getRawValue();
+    newUser['fechaNacimiento'] = new Date(newUser['fechaNacimiento']);
 
-  editUser(): void {}
+    this.requestBack
+      .updateData('usuarios', JSON.stringify(newUser), newUser.idUsuario)
+      .subscribe(
+        (data) => {
+          const listNueva = JSON.parse(JSON.stringify(this.listOfData));
+          for (const i in listNueva) {
+            if (listNueva[i].idUsuario == newUser.idUsuario) {
+              listNueva[i] = newUser;
+              break;
+            }
+          }
+
+          this.listOfData = listNueva;
+          this.listOfDataAll = listNueva;
+          Swal.fire('¡Usuario editado!', '', 'success');
+        },
+        (error) => {
+          alert('error');
+        }
+      );
+  }
 
   deleteUser(code: string): void {
     Swal.fire({
@@ -195,5 +237,18 @@ export class CrudUsuariosComponent implements OnInit {
 
   changeSede(): void {
     this.getUsuarios(this.sedeCurrent);
+  }
+
+  handleCancel(): void {
+    this.showForm = false;
+  }
+
+  setShowForm(): void {
+    this.showForm = !this.showForm;
+  }
+
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return format(date, 'd-LLL-yyyy');
   }
 }

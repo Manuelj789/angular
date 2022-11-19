@@ -28,6 +28,8 @@ export class RequestBackendService {
   }
 
   updateData(entidad: string, key: string, data: string): Observable<any> {
+    console.log(key);
+
     // const where = { where: { nombre: { like: filter, options: 'i' } } };
     // const params = new HttpParams().append('filter', JSON.stringify(where));
     const httpOptions = {
@@ -55,6 +57,58 @@ export class RequestBackendService {
 
   deleteData(entidad: string, code: string): Observable<any> {
     const urlDelete = this.url + entidad + '/' + code;
+    return this.http.delete(urlDelete);
+  }
+  getDataVehiculo(entidadVehiculo: string, filter?: string): Observable<any> {
+    console.log(entidadVehiculo);
+
+    if (filter) {
+      // {"where": {"nombre": {"like": "p", "options": "i"}} }
+      const where = { where: { placa: { like: filter, options: 'i' } } };
+      const params = new HttpParams().append('filter', JSON.stringify(where));
+      const httpOptions = {
+        // header
+        params,
+      };
+      return this.http.get(this.url + entidadVehiculo, httpOptions);
+    } else {
+      return this.http.get(this.url + entidadVehiculo);
+    }
+  }
+  updateDataVehiculo(
+    entidadVehiculo: string,
+    key: string,
+    data: string
+  ): Observable<any> {
+    // const where = { where: { nombre: { like: filter, options: 'i' } } };
+    // const params = new HttpParams().append('filter', JSON.stringify(where));
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json;charset=utf-8',
+      }),
+      // params,
+    };
+
+    const urlEdit = this.url + entidadVehiculo + '/' + key;
+    return this.http.patch(urlEdit, data, httpOptions);
+  }
+
+  addDataVehiculo(entidadVehiculo: string, data: string): Observable<any> {
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-type': 'application/json;charset=utf-8',
+      }),
+      // params,
+    };
+
+    const urlEdit = this.url + entidadVehiculo;
+    return this.http.post(urlEdit, data, httpOptions);
+  }
+
+  deleteDataVehiculo(entidadVehiculo: string, code: string): Observable<any> {
+    const urlDelete = this.url + entidadVehiculo + '/' + code;
+    console.log(urlDelete);
+
     return this.http.delete(urlDelete);
   }
 }

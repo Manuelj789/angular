@@ -1,22 +1,24 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTableModule } from 'ng-zorro-antd/table';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CrudUsuariosComponent } from './crud-usuarios/crud-usuarios.component';
-import { NzTableModule } from 'ng-zorro-antd/table';
-import { NzDividerModule } from 'ng-zorro-antd/divider';
-import { NzBreadCrumbModule } from 'ng-zorro-antd/breadcrumb';
 //import {NzMessageService} from 'ng-zorro-antd/NzMessageService';
 import { NzLayoutModule } from 'ng-zorro-antd/layout';
 import { CrudVehiculosComponent } from './crud-vehiculos/crud-vehiculos.component';
 
-import { NzButtonModule } from 'ng-zorro-antd/button';
-import { NzSpaceModule } from 'ng-zorro-antd/space';
-import { LayoutComponent } from './layout/layout.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CambioContraseniaComponent } from './crud-usuarios/cambio-contrasenia/cambio-contrasenia.component';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NzButtonModule } from 'ng-zorro-antd/button';
+import { NzModalModule } from 'ng-zorro-antd/modal';
+import { NzSpaceModule } from 'ng-zorro-antd/space';
+import { CambioContraseniaComponent } from './crud-usuarios/cambio-contrasenia/cambio-contrasenia.component';
+import { LayoutComponent } from './layout/layout.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +40,10 @@ import { HttpClientModule } from '@angular/common/http';
     FormsModule,
     HttpClientModule,
     ReactiveFormsModule,
-   // NzMessageService
+    // NzMessageService
+    ReactiveFormsModule,
+    NzModalModule,
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

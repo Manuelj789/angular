@@ -1,6 +1,6 @@
 <!-- <p>{{ titulo }}</p> -->
 
-<div>
+<!-- <div>
   <nz-space>
     <input
       *nzSpaceItem
@@ -19,6 +19,134 @@
       >Es {{ edad >= 18 ? "mayor" : "menor" }} de edad</span
     >
   </div>
-</div>
+</div> -->
 
 <!-- <cambio-contrasenia></cambio-contrasenia> -->
+<div>
+  <div
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <div>
+      <input
+        type="text"
+        style="margin-right: 10px"
+        placeholder="Buscar"
+        [(ngModel)]="campoBuscar"
+      />
+      <button style="margin-right: 10px" (click)="getVehiculosFilter()">
+        Buscar
+      </button>
+      <button (click)="setShowForm()">Agregar nuevo</button>
+    </div>
+
+    <!-- <div>
+      <label for="">Sede: </label>
+      <select
+        name=""
+        id=""
+        style="width: 180px"
+        [(ngModel)]="sedeCurrent"
+        (change)="changeSede()"
+      >
+        <option [value]="sede.idSede" *ngFor="let sede of sedes">
+          {{ sede.nombre }}
+        </option>
+      </select>
+    </div> -->
+  </div>
+
+  <hr />
+
+  <nz-table #basicTable [nzData]="listOfData">
+    <thead>
+      <tr>
+        <th>Placa</th>
+        <th>Tipo</th>
+        <th>Color</th>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Cilindraje</th>
+        <th>Capacidad</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data">
+        <td>{{ data.placa }}</td>
+        <td>{{ data.tipo }}</td>
+        <td>{{ data.color }}</td>
+        <td>{{ data.marca }}</td>
+        <td>{{ data.modelo }}</td>
+        <td>{{ data.cilindraje }}</td>
+        <td>{{ data.capacidad }}</td>
+        <td>
+          <a (click)="selectVehiculoEdit(data)">Editar</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="deleteVehiculo(data.idVehiculo)">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
+
+<nz-modal
+  [(nzVisible)]="showForm"
+  [nzOkText]="null"
+  nzCancelText="Cancelar"
+  nzTitle="Formulario"
+  (nzOnCancel)="handleCancel()"
+>
+  <ng-container *nzModalContent>
+    <div class="cls-form" [formGroup]="formVehiculo">
+      <div class="cls-row">
+        <div class="cls-field">
+          <label for="">Placa</label>
+          <input type="text" formControlName="placa" />
+        </div>
+        <div class="cls-field">
+          <label for="">Tipo</label>
+          <input type="text" formControlName="tipo" />
+        </div>
+        <div class="cls-field">
+          <label for="">Color</label>
+          <input type="text" formControlName="color" />
+        </div>
+        <div class="cls-field">
+          <label for="">Marca</label>
+          <input type="text" formControlName="marca" />
+        </div>
+      </div>
+
+      <div class="cls-row">
+        <div class="cls-field">
+          <label for="">Modelo</label>
+          <input type="text" formControlName="modelo" />
+        </div>
+        <div class="cls-field">
+          <label for="">Cilindraje</label>
+          <input type="number" formControlName="cilindraje" />
+        </div>
+        <div class="cls-field">
+          <label for="">Capacidad</label>
+          <input type="number" formControlName="capacidad" />
+        </div>
+      </div>
+
+      <div class="cls-row">
+        <button
+          *ngIf="modeForm == 'adicion'"
+          (click)="saveVehiculo()"
+          style="height: 28px"
+        >
+          Agregar
+        </button>
+        <button
+          *ngIf="modeForm == 'edicion'"
+          (click)="editVehiculo()"
+          style="height: 28px"
+        >
+          Guardar
+        </button>
+      </div>
+    </div>
+  </ng-container>
+</nz-modal>
