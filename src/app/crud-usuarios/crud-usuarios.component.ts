@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { RequestBackendService } from '../request-backend.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import Swal from 'sweetalert2';
+import { RequestBackendService } from '../request-backend.service';
 // import { NzMessageService } from 'ng-zorro-antd/message';
 interface Person {
   idUsuario: string;
@@ -38,15 +39,21 @@ export class CrudUsuariosComponent implements OnInit {
       nombre: [''],
       telefono: [],
       fechaNacimiento: [new Date()],
-      contrasenia: ['111'],
+      contrasena: ['111'],
       sedeId: [''],
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // this.getUsuarios(sede:String);
+  }
 
   getUsuarios(sede: string) {
+    console.log(sede);
+
     const entity = 'sedes/' + sede + '/usuarios';
+    console.log(entity);
+
     this.requestBack.getData(entity).subscribe({
       next: (data) => {
         console.log('next');
@@ -65,8 +72,11 @@ export class CrudUsuariosComponent implements OnInit {
   getSedes() {
     this.requestBack.getData('sedes').subscribe({
       next: (data) => {
+        console.log(data);
         this.sedes = data;
         this.sedeCurrent = data[0].idSede;
+        console.log(this.sedeCurrent);
+
         this.getUsuarios(this.sedeCurrent);
       },
       error: (error) => {
@@ -138,7 +148,7 @@ export class CrudUsuariosComponent implements OnInit {
         this.listOfData = cloneList;
       },
       error: (error) => {
-        console.log('error: ' + error);
+        console.log('error: ', error);
         this.listOfData = [];
       },
       complete: () => {
@@ -150,24 +160,36 @@ export class CrudUsuariosComponent implements OnInit {
   editUser(): void {}
 
   deleteUser(code: string): void {
-    this.requestBack.deleteData('usuarios', code).subscribe({
-      next: (data) => {
-        const cloneList = JSON.parse(JSON.stringify(this.listOfData));
-        for (const i in cloneList) {
-          if (cloneList[i].idUsuario == code) {
-            cloneList.splice(Number(i), 1);
-            break;
-          }
-        }
-        this.listOfData = cloneList;
-      },
-      error: (error) => {
-        console.log('error: ' + error);
-        this.listOfData = [];
-      },
-      complete: () => {
-        console.log('complete');
-      },
+    Swal.fire({
+      title: '¿Estás seguro de eliminar el usuario?',
+      // showDenyButton: true,
+      showCancelButton: true,
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar',
+      // denyButtonText: `Don't save`,
+    }).then((result) => {
+      /* Read more about isConfirmed, isDenied below */
+      if (result.isConfirmed) {
+        this.requestBack.deleteData('usuarios', code).subscribe({
+          next: (data) => {
+            const cloneList = JSON.parse(JSON.stringify(this.listOfData));
+            for (const i in cloneList) {
+              if (cloneList[i].idUsuario == code) {
+                cloneList.splice(Number(i), 1);
+                break;
+              }
+            }
+            this.listOfData = cloneList;
+          },
+          error: (error) => {
+            console.log('error: ' + error);
+            this.listOfData = [];
+          },
+          complete: () => {
+            console.log('complete');
+          },
+        });
+      }
     });
   }
 

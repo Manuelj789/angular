@@ -11,6 +11,8 @@ export class RequestBackendService {
   constructor(private http: HttpClient) {}
 
   getData(entidad: string, filter?: string): Observable<any> {
+    console.log(entidad);
+
     if (filter) {
       // {"where": {"nombre": {"like": "p", "options": "i"}} }
       const where = { where: { nombre: { like: filter, options: 'i' } } };

@@ -1,22 +1,85 @@
-<nz-table #basicTable [nzData]="listOfData">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Age</th>
-      <th>Address</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr *ngFor="let data of basicTable.data">
-      <td>{{ data.name }}</td>
-      <td>{{ data.age }}</td>
-      <td>{{ data.address }}</td>
-      <td>
-        <a>Action 一 {{ data.name }}</a>
-        <nz-divider nzType="vertical"></nz-divider>
-        <a>Delete</a>
-      </td>
-    </tr>
-  </tbody>
-</nz-table>
+<div>
+  <div
+    style="display: flex; justify-content: space-between; align-items: center"
+  >
+    <h3>Bienvenidos al curso de angular</h3>
+
+    <div>
+      <input
+        type="text"
+        style="margin-right: 10px"
+        placeholder="Buscar"
+        [(ngModel)]="campoBuscar"
+      />
+      <button (click)="getUsuariosFilter()">Buscar</button>
+    </div>
+
+    <!-- <cambio-contrasenia
+      [user]="userCurrent"
+      (cambioNombre)="updateUserName($event)"
+    ></cambio-contrasenia> -->
+
+    <div>
+      <label for="">Sede: </label>
+      <select
+        name=""
+        id=""
+        style="width: 180px"
+        [(ngModel)]="sedeCurrent"
+        (change)="changeSede()"
+      >
+        <option [value]="sede.idSede" *ngFor="let sede of sedes">
+          {{ sede.nombre }}
+        </option>
+      </select>
+    </div>
+  </div>
+
+  <hr />
+
+  <div class="cls-form" [formGroup]="formUser">
+    <div>
+      <label for="">Nombre</label>
+      <input type="text" formControlName="nombre" />
+    </div>
+    <div>
+      <label for="">Teléfono</label>
+      <input type="tel" formControlName="telefono" />
+    </div>
+    <div>
+      <label for="">Fecha nacimiento</label>
+      <input type="date" formControlName="fechaNacimiento" />
+    </div>
+    <div>
+      <label for="">Contraseña</label>
+      <input type="password" formControlName="contrasenia" />
+    </div>
+
+    <button (click)="saveUser()" style="height: 28px">Agregar</button>
+  </div>
+
+  <hr />
+
+  <nz-table #basicTable [nzData]="listOfData">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Teléfono</th>
+        <th>Fecha</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let data of basicTable.data" (click)="clickUser(data)">
+        <td>{{ data.nombre }}</td>
+        <td>{{ data.telefono }}</td>
+        <td>{{ data.fechaNacimiento }}</td>
+        <td>
+          <a (click)="editUser()">Editar</a>
+          <nz-divider nzType="vertical"></nz-divider>
+          <a (click)="deleteUser(data.idUsuario)">Delete</a>
+        </td>
+      </tr>
+    </tbody>
+  </nz-table>
+</div>
